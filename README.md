@@ -36,7 +36,7 @@ Please follow the installation instructions from the [original VITS repository](
 ```bash
 bash batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 2,4 --max_process 4 --batch_size 2 --vits_config ./configs/ljs_base.json --vits_checkpoint ../pretrained_ljs.pth --audio_save_dir ./TTS_samples/test
 ```
-**Note:** No need of speaker_id column in (test_data.csv)[test_data.csv] for single speaker model
+**Note:** No need of speaker_id column in [test_data.csv](test_data.csv) for single speaker model
 
 ### Multispeaker Model
 ```bash
