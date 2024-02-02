@@ -112,6 +112,3 @@ python batched_vits_inference.py \
 
 Feel free to adjust the parameters based on your specific needs. Contributions and feedback are welcome!
 
-
-# single speaker
-# bash batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 2,4 --max_process 4 --batch_size 2 --vits_config ./configs/ljs_base.json --vits_checkpoint ../pretrained_ljs.pth --audio_save_dir ./TTS
