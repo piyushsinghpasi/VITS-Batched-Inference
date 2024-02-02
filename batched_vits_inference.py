@@ -23,7 +23,7 @@ from scipy.io.wavfile import write as write_audio
 
 
 import argparse
-from typing import List
+from typing import List, Union
 
 
 parser = argparse.ArgumentParser(description="generate TTS samples from VITS TTS")
@@ -73,6 +73,10 @@ parser.add_argument("--length_scale", type=float,
     default=1,
     help="duration used for inference"
 )
+parser.add_argument("--vits_multispeaker", type=bool,
+    default=False,
+    help="VITS multi speaker model is used"
+)
 
 args = parser.parse_args()
 print('\n'.join(f'{k}={v}' for k, v in vars(args).items()))
@@ -111,26 +115,35 @@ print(df)
 texts, audio_save_files = df["text"].tolist(), df["audio_filename"].tolist()
 
 @torch.no_grad()
-def batched_inference(x_tst:torch.Tensor, x_tst_lengths:torch.Tensor):
+def batched_inference(x_tst:torch.Tensor, x_tst_lengths:torch.Tensor, curr_spk_ids: Union[torch.Tensor, None] = None):
     """performs batched inference on tokenized text and saves it in file.
 
     Args:
         x_tst (torch.Tensor): tokenized and padded text 
         x_tst_lengths (torch.Tensor): length of text
+        curr_spk_ids (Union[torch.Tensor, None]): speaker ids if multispeaker model. Defaults to None implying single speaker model
 
     Returns:
         (torch.Tensor, torch.Tensor): audio & its length
+
+_
     """
 
     x_tst = x_tst.cuda()
     x_tst_lengths = x_tst_lengths.cuda()
 
+    sid_args = {}
+    if curr_spk_ids is not None:
+        sid = curr_spk_ids.cuda()
+        sid_args["sid"] = sid
+        
     audios, _, mask, *_ = net_g_vits.infer(
         x_tst, 
         x_tst_lengths, 
         noise_scale=args.noise_scale, 
         noise_scale_w=args.noise_scale_w, 
         length_scale=args.length_scale,
+        **sid_args,
     )
     audio_lens = mask.sum([1,2]).long() * hps_vits.data.hop_length
 
@@ -166,11 +179,27 @@ def get_text(text, hps):
 ############ VITS ############################################################################
 hps_vits = utils.get_hparams_from_file(args.vits_config)
 
-    
+speaker_ids = None
+
+if args.vits_multispeaker and "speaker_id" not in columns:
+    print(f"column speaker_id missing from {args.data_file}")
+    print(f"speaker_id will be picked randomly from  between 0 and {hps_vits.data.n_speakers-1}")
+
+elif args.vits_multispeaker:
+    speaker_ids = df["speaker_id"].tolist()
+
+
+speaker_args = {}
+if args.vits_multispeaker:
+    speaker_args = {
+        "n_speakers": hps_vits.data.n_speakers,
+    }
+
 net_g_vits = SynthesizerTrn(
     len(symbols),
     hps_vits.data.filter_length // 2 + 1,
     hps_vits.train.segment_size // hps_vits.data.hop_length,
+    **speaker_args,
     **hps_vits.model).cuda()
 _ = net_g_vits.eval()
 
@@ -183,7 +212,7 @@ saved_tts_abs_path = []
 curr_text_batch = []
 curr_text_len_batch = []
 batch_save_file_name = []
-
+batch_speaker_id = []
 
 
 for idx, (text, audio_save_file) in enumerate(zip(texts, audio_save_files)):
@@ -209,6 +238,16 @@ for idx, (text, audio_save_file) in enumerate(zip(texts, audio_save_files)):
         curr_text_batch.append(stn_tst_vits)
         curr_text_len_batch.append(stn_tst_vits.size(0))
 
+        if args.vits_multispeaker:
+            # user has given speaker id
+            if speaker_ids is not None:
+                batch_speaker_id.append(int(speaker_ids[idx]))
+            else:
+                # no speaker id given
+                # randomly sample
+                sid = torch.randint(hps_vits.data.n_speakers, (1,))
+                batch_speaker_id.append(sid.item())
+
 
         batch_save_file_name.append(
             audio_save_path
@@ -220,12 +259,17 @@ for idx, (text, audio_save_file) in enumerate(zip(texts, audio_save_files)):
         # or last batch (can be of diff length)
         x_tst = pad_sequence(curr_text_batch, batch_first=True)
         x_tst_lengths = torch.LongTensor(curr_text_len_batch)
+        curr_spk_ids = None
+
+        if args.vits_multispeaker:
+            curr_spk_ids = torch.LongTensor(batch_speaker_id)
+        
     else:
         # keep accumulating until we hit batch size or last batch
         continue
 
     # generate audio
-    audios, audio_lens = batched_inference(x_tst, x_tst_lengths)
+    audios, audio_lens = batched_inference(x_tst, x_tst_lengths, curr_spk_ids)
 
     # write audio
     write_batched_audios(audios, audio_lens, batch_save_file_name)
@@ -237,7 +281,7 @@ for idx, (text, audio_save_file) in enumerate(zip(texts, audio_save_files)):
     curr_text_batch = []
     curr_text_len_batch = []
     batch_save_file_name = []
-
+    batch_speaker_id = []
 
 
 

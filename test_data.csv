@@ -1,18 +1,18 @@
-text,audio_filename
-Hello how are you today, file1.wav
-Hello how were you yesterday, file2.wav
-Hello how will you tommorrow, file3.wav
-"Don't cry, snowman, not in front of me", file4.wav
-"Who'll catch your tears if you can't catch me, darling?", file5.wav
-"If you can't catch me, darling",file6.wav
-"Don't cry, snowman, don't leave me this way",file7.wav
-"A puddle of water can't hold me close, baby",file8.wav
-"Can't hold me close, baby",file9.wav
-"I want you to know that I'm never leaving",file10.wav
-"'Cause I'm Mrs. Snow, 'til death we'll be freezing",file11.wav
-"Yeah, you are my home, my home for all seasons",file12.wav
-"So come on, let's go",file13.wav
-"Let's go below zero and hide from the sun",file14.wav
-"I love you forever where we'll have some fun",file15.wav
-"Yes, let's hit the North Pole and live happily",file16.wav
-"Please, don't cry no tears now, it's Christmas, baby",file17.wav
+text,audio_filename,speaker_id
+Hello how are you today,file1.wav,1
+Hello how were you yesterday,file2.wav,2
+Hello how will you tomorrow,file3.wav,3
+"Don't cry, snowman, not in front of me",file4.wav,4
+"Who'll catch your tears if you can't catch me, darling?",file5.wav,5
+"If you can't catch me, darling",file6.wav,6
+"Don't cry, snowman, don't leave me this way",file7.wav,7
+"A puddle of water can't hold me close, baby",file8.wav,8
+"Can't hold me close, baby",file9.wav,9
+"I want you to know that I'm never leaving",file10.wav,10
+"'Cause I'm Mrs. Snow, 'til death we'll be freezing",file11.wav,11
+"Yeah, you are my home, my home for all seasons",file12.wav,12
+"So come on, let's go",file13.wav,13
+"Let's go below zero and hide from the sun",file14.wav,14
+"I love you forever where we'll have some fun",file15.wav,15
+"Yes, let's hit the North Pole and live happily",file16.wav,16
+"Please, don't cry no tears now, it's Christmas, baby",file17.wav,17

@@ -1,6 +1,7 @@
+README.md
 # Efficient Batched Inference for VITS TTS Model
 
-This repository includes two main components: a shell script for efficient batched inference and a Python script for single-process inference of the VITS (Variational Inference Text-to-Speech) model. 
+This repository includes two main components: a shell script for efficient batched inference and a Python script for single-process inference of the VITS (Variational Inference Text-to-Speech) model. Both scripts support multiprocessing, allowing for faster parallel execution.
 
 ## Installation
 
@@ -13,12 +14,12 @@ Please follow the installation instructions from the [original VITS repository](
 ### Usage
 
 ```bash
-./batched_vits_multiprocess_inference.sh --csv_file <csv_file> --gpu_ids <gpu_ids> --max_process <max_process> --batch_size <batch_size> --vits_config <vits_config> --vits_checkpoint <vits_checkpoint> [--audio_save_dir <audio_save_dir> --noise_scale <noise_scale> --noise_scale_w <noise_scale_w> --length_scale <length_scale>]
+./batched_vits_multiprocess_inference.sh --csv_file <csv_file> --gpu_ids <gpu_ids> --max_process <max_process> --batch_size <batch_size> --vits_config <vits_config> --vits_checkpoint <vits_checkpoint> [--audio_save_dir <audio_save_dir> --noise_scale <noise_scale> --noise_scale_w <noise_scale_w> --length_scale <length_scale> --vits_multispeaker True]
 ```
 
 ### Parameters
 
-- `--csv_file`: Path to the CSV or TSV file containing input data. Contains two columns `text` and `filename`. `text` column has text for which audio has to be generated and saved into `filename`. See example csv file : [test_data.csv](test_data.csv)
+- `--csv_file`: Path to the CSV or TSV file containing input data. Contains two columns `text` and `filename`. `text` column has text for which audio has to be generated and saved into `filename`. See example csv file: [test_data.csv](test_data.csv) 
 - `--gpu_ids`: Comma-separated GPU IDs to use for multiprocessing.
 - `--max_process`: Maximum number of parallel processes.
 - `--batch_size`: Batch size for each process.
@@ -28,12 +29,24 @@ Please follow the installation instructions from the [original VITS repository](
 - `--noise_scale`: Noise scale factor (default: 0.667).
 - `--noise_scale_w`: Noise scale weight (default: 0.8).
 - `--length_scale`: Length scale factor (default: 1).
+- `--vits_multispeaker`: Optional flag for indicating whether a multispeaker model is used (default: false).
 
 ### Example
-
+### Single Speaker Model
 ```bash
-./batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 0,1 --max_process 4 --batch_size 16 --vits_config ljs_base.json --vits_checkpoint pretrained_ljs.pth
+bash batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 2,4 --max_process 4 --batch_size 2 --vits_config ./configs/ljs_base.json --vits_checkpoint ../pretrained_ljs.pth --audio_save_dir ./TTS_samples/test
 ```
+**Note:** No need of speaker_id column in (test_data.csv)[test_data.csv] for single speaker model
+
+### Multispeaker Model
+```bash
+bash batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 2,4 --max_process 4 --batch_size 2 --vits_config ./configs/vctk_base.json --vits_checkpoint ../pretrained_vctk.pth --audio_save_dir ./TTS_samples/test_sid --vits_multispeaker true
+```
+**Note:** If you choose to use the vits_multispeaker option and "speaker_id" column is absent in your dataset.
+
+In such cases, the script will compensate by generating random speaker IDs, chosen from the range 0 to hyperparameters.data.n_speakers-1.
+
+
 
 ### Output
 
@@ -44,7 +57,7 @@ Please follow the installation instructions from the [original VITS repository](
 
 ## Single Process Inference (batched_vits_inference.py)
 
-Multiple runs of this file with different arguments is done using `batched_vits_multiprocessing_inference.sh`
+Multiple runs of this file with different arguments are done using `batched_vits_multiprocessing_inference.sh`
 
 ### Usage
 
@@ -60,7 +73,8 @@ python batched_vits_inference.py \
     --batch_size <batch_size> \
     [--noise_scale <noise_scale>] \
     [--noise_scale_w <noise_scale_w>] \
-    [--length_scale <length_scale>]
+    [--length_scale <length_scale>] \
+    [--vits_multispeaker True]
 ```
 
 ### Parameters
@@ -76,6 +90,7 @@ python batched_vits_inference.py \
 - `--noise_scale`: Noise scale used for inference (default: 0.667).
 - `--noise_scale_w`: Noise scale weight used for inference (default: 0.8).
 - `--length_scale`: Duration used for inference (default: 1).
+- `--vits_multispeaker`: Optional flag for indicating whether a multispeaker model is used (default: False).
 
 ### Example
 
@@ -91,7 +106,12 @@ python batched_vits_inference.py \
     --batch_size 4 \
     --noise_scale 0.5 \
     --noise_scale_w 0.9 \
-    --length_scale 1.2
+    --length_scale 1.2 \
+    --vits_multispeaker True
 ```
 
 Feel free to adjust the parameters based on your specific needs. Contributions and feedback are welcome!
+
+
+# single speaker
+# bash batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 2,4 --max_process 4 --batch_size 2 --vits_config ./configs/ljs_base.json --vits_checkpoint ../pretrained_ljs.pth --audio_save_dir ./TTS
