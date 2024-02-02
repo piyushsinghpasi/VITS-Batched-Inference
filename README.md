@@ -18,7 +18,7 @@ Please follow the installation instructions from the [original VITS repository](
 
 ### Parameters
 
-- `--csv_file`: Path to the CSV or TSV file containing input data. Contains two columns `text` and `filename`. `text` column has text for which audio has to be generated and saved into `filename`. Optional `speaker_id` column for multispeaker model (See Note in below Multispeaker Model example). See example csv file: [test_data.csv](test_data.csv) 
+- `--csv_file`: Path to the CSV or TSV file containing input data. Contains two columns `text` and `filename`. `text` column has text for which audio has to be generated and saved into `filename`. Optional `speaker_id` column for multispeaker model (See Note below Multispeaker Model example). See example csv file: [test_data.csv](test_data.csv) 
 - `--gpu_ids`: Comma-separated GPU IDs to use for multiprocessing.
 - `--max_process`: Maximum number of parallel processes.
 - `--batch_size`: Batch size for each process.
