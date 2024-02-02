@@ -32,7 +32,7 @@ Please follow the installation instructions from the [original VITS repository](
 ### Example
 
 ```bash
-./batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 0,1 --max_process 2 --batch_size 4 --vits_config ljs_base.json --vits_checkpoint pretrained_ljs.pth
+./batched_vits_multiprocess_inference.sh --csv_file test_data.csv --gpu_ids 0,1 --max_process 4 --batch_size 16 --vits_config ljs_base.json --vits_checkpoint pretrained_ljs.pth
 ```
 
 ### Output
