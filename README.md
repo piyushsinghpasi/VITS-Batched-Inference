@@ -13,7 +13,7 @@ Please follow the installation instructions from the [original VITS repository](
 ### Usage
 
 ```bash
-./batched_vits_multiprocess_inference.sh --csv_file <csv_file> --gpu_ids <gpu_ids> --max_process <max_process> --batch_size <batch_size> --vits_config <vits_config> --vits_checkpoint <vits_checkpoint> [--audio_save_dir <audio_save_dir> --noise_scale <noise_scale> --noise_scale_w <noise_scale_w> --length_scale <length_scale> --vits_multispeaker True]
+./batched_vits_multiprocess_inference.sh --csv_file <csv_file> --gpu_ids <gpu_ids> --max_process <max_process> --batch_size <batch_size> --vits_config <vits_config> --vits_checkpoint <vits_checkpoint> [--audio_save_dir <audio_save_dir> --noise_scale <noise_scale> --noise_scale_w <noise_scale_w> --length_scale <length_scale> --vits_multispeaker true]
 ```
 
 ### Parameters
