@@ -41,7 +41,7 @@ parser.add_argument("--audio_saving_dir", "-v", type=str,
     help="path where tts samples from VITS model will be saved"
 )
 parser.add_argument("--data_file", type=str,
-    default="path_to_data/data.csv",
+    default="./test_data.csv",
     help="path to data csv or tsv containing `text` and `audio_filename` columns"
         "`text` is the text for which audio will be generated"
         "`audio_filename` is path where generated audio will be saved"
