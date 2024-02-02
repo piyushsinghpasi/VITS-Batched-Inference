@@ -1,6 +1,6 @@
 # Efficient Batched Inference for VITS TTS Model
 
-This repository includes two main components: a shell script for efficient batched inference and a Python script for single-process inference of the VITS (Variational Inference Text-to-Speech) model. Both scripts support multiprocessing, allowing for faster parallel execution.
+This repository includes two main components: a shell script for efficient batched inference and a Python script for single-process inference of the VITS (Variational Inference Text-to-Speech) model. 
 
 ## Installation
 
