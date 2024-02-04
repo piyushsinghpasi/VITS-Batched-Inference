@@ -73,8 +73,7 @@ parser.add_argument("--length_scale", type=float,
     default=1,
     help="duration used for inference"
 )
-parser.add_argument("--vits_multispeaker", type=bool,
-    default=False,
+parser.add_argument("--vits_multispeaker", type=lambda x: x.lower() == 'true',
     help="VITS multi speaker model is used"
 )
 
